@@ -1,14 +1,23 @@
 from datetime import datetime
-import pandas as pd
 from pymongo import MongoClient
 from RiotApi import *
 import logging
 
-# Configuration du logging
+# Logging config
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-API_KEY = 'RGAPI-2f5edbc1-945b-4274-bfab-0872b5728300'
+
+# Reading api_key from params.txt
+def get_api_key(filename="params.txt"):
+    with open(filename, "r") as file:
+        for line in file:
+            if line.startswith("API_KEY"):
+                return line.strip().split("=")[1]  # get value after api_key
+
+
+# Lecture de la clé API
+API_KEY = get_api_key()
 PUUID_URL = 'https://europe.api.riotgames.com/riot/account/v1/accounts/by-riot-id/'
 MATCHSLIST_URL = "https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/"
 MATCHDATA_URL = "https://europe.api.riotgames.com/lol/match/v5/matches/"
