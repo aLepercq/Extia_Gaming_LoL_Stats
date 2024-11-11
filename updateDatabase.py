@@ -1,6 +1,6 @@
 from datetime import datetime
-from pymongo import MongoClient
 from riotApi import *
+from otherFunctions import *
 import logging
 
 # Logging config
@@ -8,45 +8,18 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-# Reading api_key from .env
-def get_env_value(param: str, filename=".env"):
-    """Reads the specified parameter's value from the .env file."""
-    with open(filename, "r") as file:
-        for line in file:
-            if line.startswith(f"{param}="):
-                return line.strip().split("=", 1)[1]  # Get value after 'param='
-
-
 # Read API_KEY, MONGODB_URI, DB_NAME, and PUUID_URL from .env file
 API_KEY = get_env_value("API_KEY")
-MONGODB_URI = get_env_value("MONGODB_URI")
-DB_NAME = get_env_value("DB_NAME")
 PUUID_URL = get_env_value("PUUID_URL")
 MATCHSLIST_URL = get_env_value("MATCHSLIST_URL")
 MATCHDATA_URL = get_env_value("MATCHDATA_URL")
 MATCHTIMELINE_URL = get_env_value("MATCHTIMELINE_URL")
 
-# Parse MONGODB_URI to extract XXX and YYY values
-mongodb_uri_parts = MONGODB_URI.split(":")
-MONGODB_HOST = mongodb_uri_parts[0]
-MONGODB_PORT = mongodb_uri_parts[1]
-
 # Connection to DB
-try:
-    # Manage Database Connection
-    client = MongoClient(MONGODB_HOST, 27017)
-    db = client['Extia_Gaming_LoL_2024']
-    players_collection = db['players']
-    matchs_collection = db['matchs']
-    timelines_collection = db['timelines']
-
-    # Vérifier la connexion
-    client.server_info()
-    logger.info("Connection to MongoDB succeed")
-
-except Exception as e:
-    logger.error(f"Connection failed to MongoDB: {str(e)}")
-    raise
+db = logToDB()
+players_collection = db['players']
+matchs_collection = db['matchs']
+timelines_collection = db['timelines']
 
 # Update Players Database
 try:
