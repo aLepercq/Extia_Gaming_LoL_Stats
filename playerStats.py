@@ -1,4 +1,4 @@
-from pymongo import MongoClient
+from otherFunctions import *
 import pandas as pd
 import logging
 
@@ -6,21 +6,20 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Read API_KEY, MONGODB_URI, DB_NAME, and PUUID_URL from .env file
+MONGODB_URI = get_env_value("MONGODB_URI")
+DB_NAME = get_env_value("DB_NAME")
+
+# Parse MONGODB_URI to extract XXX and YYY values
+mongodb_uri_parts = MONGODB_URI.split(":")
+MONGODB_HOST = mongodb_uri_parts[0]
+MONGODB_PORT = mongodb_uri_parts[1]
+
 # Connection to DB
-try:
-    # Manage Database Connection
-    client = MongoClient('localhost', 27017)
-    db = client['Extia_Gaming_LoL_2024']
-    players_collection = db['players']
-    matchs_collection = db['matchs']
-
-    # Vérifier la connexion
-    client.server_info()
-    logger.info("Connection to MongoDB succeeded")
-
-except Exception as e:
-    logger.error(f"Connection failed to MongoDB: {str(e)}")
-    raise
+db = logToDB()
+players_collection = db['players']
+matchs_collection = db['matchs']
+timelines_collection = db['timelines']
 
 # Create a dictionary to map each puuid to gameName and team
 puuid_to_player = {
@@ -61,7 +60,7 @@ for match in matchs_collection.find():
             team = player_info['team']
 
             # Get player data
-            original_position = participant.get('individualPosition', 'UNKNOWN')
+            original_position = participant.get('teamPosition', 'UNKNOWN')
             position = position_map.get(original_position,
                                         original_position)  # Use abbreviation or keep original if not mapped
             win = participant.get('win', False)
