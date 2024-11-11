@@ -21,4 +21,60 @@ players_collection = db['players']
 matchs_collection = db['matchs']
 timelines_collection = db['timelines']
 
+# Étape 1 : Extraire tous les puuids existants dans la collection players
+existing_puuids = set(player["puuid"] for player in players_collection.find({}, {"puuid": 1}))
+
+# Étape 2 : Utiliser une pipeline d'agrégation pour trouver les matchs avec des puuids inconnus
+pipeline_missing_players = [
+    {
+        "$project": {
+            "match_id": "$match_id",
+            "missing_puuids": {
+                "$filter": {
+                    "input": "$metadata.participants",
+                    "as": "puuid",
+                    "cond": {"$not": {"$in": ["$$puuid", list(existing_puuids)]}}
+                }
+            }
+        }
+    },
+    {
+        "$match": {"missing_puuids": {"$ne": []}}  # Garder seulement les matchs avec des puuids manquants
+    },
+    {
+        "$unwind": "$missing_puuids"  # Unwrap chaque puuid manquant
+    },
+    {
+        "$lookup": {
+            "from": "players",
+            "localField": "missing_puuids",
+            "foreignField": "puuid",
+            "as": "player_info"
+        }
+    },
+    {
+        "$unwind": {
+            "path": "$player_info",
+            "preserveNullAndEmptyArrays": True  # Inclure les puuids sans correspondance dans players
+        }
+    },
+    {
+        "$project": {
+            "match_id": 1,
+            "puuid": "$missing_puuids",
+            "gameName": "$player_info.gameName",
+            "tagLine": "$player_info.tagLine"
+        }
+    }
+]
+
+# Exécuter la requête
+results = list(matchs_collection.aggregate(pipeline_missing_players))
+
+# Afficher les résultats
+for result in results:
+    print(result)
+
+
+
 

@@ -60,7 +60,7 @@ for match in matchs_collection.find():
             team = player_info['team']
 
             # Get player data
-            original_position = participant.get('individualPosition', 'UNKNOWN')
+            original_position = participant.get('teamPosition', 'UNKNOWN')
             position = position_map.get(original_position,
                                         original_position)  # Use abbreviation or keep original if not mapped
             win = participant.get('win', False)
