@@ -49,7 +49,7 @@ To access match information, a valid API key is required.
 To generate player statistics, run the main Python file
 ```bash
 python updateDatabase.py
-python playerStats.py
+python toornamentStats.py
 ```
 2. Check the logs :
 connection information and progress will be displayed in the console.
