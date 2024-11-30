@@ -34,7 +34,6 @@ def getMatchData(matchdata_url, api_key, matchid):
     session = HTMLSession()
     response = session.get(f"{matchdata_url}{matchid}",
                            headers={"X-Riot-Token": api_key})
-    print()
     return json.loads(response.text)
 
 
