@@ -1,4 +1,5 @@
 .env
-players_statistics.xlsx
-champions_statistics.xlsx
-dragontail-14.22.1.tgz
+.idea
+__pycache__/
+toornaments/
+resources/

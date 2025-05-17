@@ -19,11 +19,11 @@ def getPuuid(puuid_url: str, api_key: str, player) -> str:
         return ""
 
 
-def getMatchlist(matchslist_url: str, api_key: str, puuid: str, start):
+def getMatchlist(matchslist_url: str, api_key: str, puuid: str, start, end):
     """return the last 30 tourney matches from start epoch given a puuid"""
     time.sleep(1.2)  # sleep to stay below api limits
     session = HTMLSession()
-    response = session.get(f"{matchslist_url}{puuid}/ids?startTime={start}&type=tourney&start=0&count=30",
+    response = session.get(f"{matchslist_url}{puuid}/ids?startTime={start}&endTime={end}&type=tourney&start=0&count=30",
                            headers={"X-Riot-Token": api_key})
     return json.loads(response.text)
 
