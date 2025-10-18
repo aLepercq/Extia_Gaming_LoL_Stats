@@ -16,11 +16,11 @@ position_dict = {
 }
 
 weighting = {
-    "TOP": {"soloKills_mean": 1.5, "damageTakenOnTeamPercentage": 1.2, "damageSelfMitigated": 1.3, "turretPlatesTaken": 1.2, "goldPerMinute": 1.1, "killParticipation": 1.0},
-    "JGL": {"kda": 1.3, "killParticipation": 1.2, "riftHeraldTakedowns": 1.3, "teamBaronKills": 1.4, "objectivesStolen": 1.5, "damageDealtToObjectives": 1.2},
-    "MID": {"kda": 1.2, "totalDamageDealtToChampions": 1.4, "soloKills_mean": 1.3, "totalMinionsKilled": 1.2, "killParticipation": 1.1, "goldPerMinute": 1.2},
-    "BOT": {"kda": 1.3, "totalDamageDealtToChampions": 1.4, "goldPerMinute": 1.3, "killParticipation": 1.1, "totalMinionsKilled": 1.2, "turretKills": 1.1},
-    "SUP": {"killParticipation": 1.4, "visionScore": 1.5, "wardsPlaced": 1.3, "totalTimeCCDealt": 1.2, "assists": 1.3, "totalDamageShieldedOnTeammates": 1.2}
+    "TOP": {"damageDealtToObjectives": 0.1, "damageSelfMitigated": 0.1, "damageTakenOnTeamPercentage": 0.3, "damagePerMinute": 0.3, "kda": 0.1, "killParticipation": 0.1},
+    "JGL": {"killParticipation": 0.2, "damageDealtToObjectives": 0.2, "kda": 0.1, "visionScorePerMinute": 0.1, "damageTakenOnTeamPercentage": 0.2, "damagePerMinute": 0.2},
+    "MID": {"damagePerMinute": 0.3, "kda": 0.3, "killParticipation": 0.2, "CSPerMinute": 0.1, "teamDamagePercentage": 0.1},
+    "BOT": {"CSPerMinute": 0.2, "kda": 0.3, "damagePerMinute": 0.2, "killParticipation": 0.2, "teamDamagePercentage": 0.1},
+    "SUP": {"visionScorePerMinute": 0.3, "killParticipation": 0.3, "totalHealsOnTeammates": 0.2, "totalDamageShieldedOnTeammates": 0.2}
 }
 
 
@@ -103,6 +103,8 @@ def get_team(participants: list, puuid_to_player: dict):
     # Identify the most common team
     max_count = max(team_counts.values(), default=0)
     top_teams = [team for team, count in team_counts.items() if count == max_count]
+    if top_teams == ['PSG', 'Atlanteam', 'EST']:
+        top_teams = ['Atlanteam']
 
     # Return the most frequent team or all teams in the event of a tie
     return top_teams[0] if len(top_teams) == 1 else top_teams

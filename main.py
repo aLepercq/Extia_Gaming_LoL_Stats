@@ -1,6 +1,7 @@
 from utils.db.updateDB import update_players, update_matches
 from utils.stats.prepareStats import *
 from utils.stats.playerStats import *
+from utils.stats.championPool import *
 from utils.common.commonFunctions import logger, getFileValue
 
 
@@ -36,8 +37,7 @@ def update_statistics(tournament: str):
     if choice == 'a':
         generate_players_stats(tournament)
     elif choice == 'b':
-        logger.info("Update champion pool...")
-        # update_champion_pool(tournament)
+        generate_champion_pool(tournament)
     elif choice == 'c':
         logger.info("Update champion statistics")
         # update_champion_stats(tournament)

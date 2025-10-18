@@ -55,6 +55,7 @@ def update_puuid(players_collection):
 
 
 def update_context(db):
+    print("updating matches context")
     puuid_to_playerdata = {p["puuid"]: p for p in db['players'].find()}
     matches = list(db['matches'].find({}, {"match_id": 1, "info.gameCreation": 1, "metadata.participants": 1}))
     df = pd.DataFrame([
@@ -179,7 +180,6 @@ def update_matches(tournament: str):
             match_ids = getMatchlist(matchslist_url, api_key, player['puuid'], start_timestamp, end_timestamp)
             for match_id in match_ids:
                 if matches_collection.count_documents({"match_id": match_id}) == 0:
-                    print(f"processing {match_id}")
                     try:
                         match_data = getMatchData(matchdata_url, api_key, match_id)
                     except Exception as e:
@@ -190,6 +190,7 @@ def update_matches(tournament: str):
                         match_data['created_at'] = datetime.utcnow()
                         game_status = match_data['info']['endOfGameResult']
                         if match_data['info']['tournamentCode'] in tournament_codes and game_status == "GameComplete":
+                            print(f"processing {match_id}")
                             matches_collection.insert_one(match_data)
                     except Exception as e:
                         logger.error(f"Match not inserted: {str(e)}")

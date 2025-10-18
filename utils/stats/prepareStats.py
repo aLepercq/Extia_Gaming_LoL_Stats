@@ -36,6 +36,9 @@ def generate_player_match_stats(tournament: str):
 
         # Basic stats
         for participant in participants:
+            # verifier qu'un joueur est présent dans la base
+            if not players.find_one({"puuid": participant["puuid"]}):
+                continue
             name = players.find_one({"puuid": participant["puuid"]})["name"]
             participant_id = next(
                 (p_id for p_id, puuid in participant_id_to_puuid.items() if puuid == participant["puuid"]), None
@@ -118,7 +121,9 @@ def generate_player_match_stats(tournament: str):
                 "win": participant["win"],
                 "cs_15": cs_15,
                 "gold_15": gold_15,
-                "xp_15": xp_15
+                "xp_15": xp_15,
+                "visionScorePerMinute": participant["challenges"].get("visionScorePerMinute", 0),
+                "CSPerMinute": participant["totalMinionsKilled"] / (match["info"]["gameDuration"] / 60)
             }
 
             # Mettre à jour ou insérer les statistiques du joueur
